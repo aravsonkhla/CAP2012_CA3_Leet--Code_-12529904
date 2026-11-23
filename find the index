@@ -1,0 +1,38 @@
+#include <string>
+
+class Solution {
+public:
+    int strStr(std::string haystack, std::string needle) {
+        int hLen = haystack.length();
+        int nLen = needle.length();
+
+        // Edge Case: If the needle is longer than the haystack, 
+        // it's mathematically impossible for it to fit inside!
+        if (nLen > hLen) {
+            return -1;
+        }
+
+        // We only need to loop up to the point where the needle can still physically fit
+        for (int i = 0; i <= hLen - nLen; i++) {
+            
+            // Optimization: Only bother checking if the first character matches
+            if (haystack[i] == needle[0]) {
+                int j = 0;
+                
+                // Track forward to see if the rest of the substring matches
+                while (j < nLen && haystack[i + j] == needle[j]) {
+                    j++;
+                }
+
+                // If our inner pointer matched every single character of the needle,
+                // we have found our first true occurrence!
+                if (j == nLen) {
+                    return i;
+                }
+            }
+        }
+
+        // We searched the entire haystack and found no complete match
+        return -1;
+    }
+};
