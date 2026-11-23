@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char* longestCommonPrefix(char** strs, int strsSize) {
+    // Quick sanity check
+    if (strsSize == 0 || strs == NULL) {
+        char* empty = malloc(1);
+        if (empty) empty[0] = '\0';
+        return empty;
+    }
+
+    // We'll use the first string as our baseline comparison
+    char* ref = strs[0];
+    int len = 0;
+
+    // Check character by character
+    while (ref[len] != '\0') {
+        char c = ref[len];
+
+        // See if this character matches across all other strings
+        for (int i = 1; i < strsSize; i++) {
+            // Stop if the string ends early or we hit a mismatch
+            if (strs[i][len] == '\0' || strs[i][len] != c) {
+                goto match_ended;
+            }
+        }
+        len++;
+    }
+
+match_ended:
+    // Allocate exactly what we need + 1 for the null terminator
+    char* result = malloc(len + 1);
+    if (!result) return NULL;
+
+    // Copy the matching prefix over
+    memcpy(result, ref, len);
+    result[len] = '\0';
+
+    return result;
+}
