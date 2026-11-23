@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char* convert(char* s, int numRows) {
+    // Edge case: If there's only 1 row, or the string is shorter than the row count,
+    // the zigzag pattern doesn't change the sequence at all.
+    int len = strlen(s);
+    if (numRows <= 1 || numRows >= len) {
+        return s;
+    }
+
+    // Allocate an array of strings, one for each row.
+    // Each row can theoretically hold up to 'len' characters.
+    char** rows = (char**)malloc(numRows * sizeof(char*));
+    int* rowSizes = (int*)calloc(numRows, sizeof(int));
+    for (int i = 0; i < numRows; i++) {
+        rows[i] = (char*)malloc((len + 1) * sizeof(char));
+    }
+
+    int currentRow = 0;
+    int goingDown = 0; // Boolean flag to track the bouncing direction
+
+    // Step 1: Distribute characters across their respective rows
+    for (int i = 0; i < len; i++) {
+        // Append the character to the current row
+        rows[currentRow][rowSizes[currentRow]] = s[i];
+        rowSizes[currentRow]++;
+
+        // Turn around if we hit the top row (0) or the bottom row (numRows - 1)
+        if (currentRow == 0 || currentRow == numRows - 1) {
+            goingDown = !goingDown;
+        }
+
+        // Move to the next row based on direction
+        currentRow += goingDown ? 1 : -1;
+    }
+
+    // Step 2: Combine all row strings into a single output string
+    char* result = (char*)malloc((len + 1) * sizeof(char));
+    int resultIdx = 0;
+    for (int i = 0; i < numRows; i++) {
+        for (int j = 0; j < rowSizes[i]; j++) {
+            result[resultIdx++] = rows[i][j];
+        }
+        free(rows[i]); // Clean up row memory as we read it
+    }
+    result[resultIdx] = '\0'; // Null-terminate the final string
+
+    // Free remaining allocated scaffolding
+    free(rows);
+    free(rowSizes);
+
+    return result;
+}
