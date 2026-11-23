@@ -1,0 +1,47 @@
+#include <string>
+
+class Solution {
+private:
+    // Helper function that expands outward from a given center point
+    // and returns the length of the palindrome found.
+    int expandFromCenter(const std::string& s, int left, int right) {
+        // Expand outward as long as we are within boundaries and characters match
+        while (left >= 0 && right < s.length() && s[left] == s[right]) {
+            left--;
+            right++;
+        }
+        // Return the length of the valid palindrome found.
+        // Formula is (right - left - 1) because the while loop increments/decrements 
+        // one step past the valid boundaries before failing.
+        return right - left - 1;
+    }
+
+public:
+    std::string longestPalindrome(std::string s) {
+        if (s.empty()) return "";
+
+        int start = 0; // Tracks the starting index of our best palindrome
+        int maxLength = 0; // Tracks the length of our best palindrome
+
+        for (int i = 0; i < s.length(); i++) {
+            // Case 1: Odd length palindrome centered at index i (e.g., "aba")
+            int len1 = expandFromCenter(s, i, i);
+            
+            // Case 2: Even length palindrome centered between i and i+1 (e.g., "abba")
+            int len2 = expandFromCenter(s, i, i + 1);
+
+            // Find the longer of the two expansions
+            int currentMaxLen = std::max(len1, len2);
+
+            // If we found a palindrome longer than our previous record, update our markers
+            if (currentMaxLen > maxLength) {
+                maxLength = currentMaxLen;
+                // Calculate the true starting position of this substring
+                start = i - (currentMaxLen - 1) / 2;
+            }
+        }
+
+        // Return the best substring using the starting index and total length
+        return s.substr(start, maxLength);
+    }
+};
