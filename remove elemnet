@@ -1,0 +1,14 @@
+
+int removeElement(int* nums, int numsSize, int val) {
+    int k = 0; // Tracks the index for non-val elements
+
+    for (int i = 0; i < numsSize; i++) {
+        // If it's a keeper, overwrite the next available slot
+        if (nums[i] != val) {
+            nums[k] = nums[i];
+            k++;
+        }
+    }
+
+    return k;
+}
